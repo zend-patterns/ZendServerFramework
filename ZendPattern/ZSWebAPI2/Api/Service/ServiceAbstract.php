@@ -9,6 +9,8 @@ use ZendPattern\ZSWebAPI2\Api\Key\Key;
 use Zend\Http\Response;
 use ZendPattern\ZSWebAPI2\Exception\Exception;
 use ZendPattern\ZSWebAPI2\Api\Response\ResponseXml;
+use ZendPattern\ZSWebAPI2\Api\ApiParameter;
+use Zend\Stdlib\Parameters;
 
 abstract class ServiceAbstract extends FeatureAbstract
 {
@@ -25,13 +27,6 @@ abstract class ServiceAbstract extends FeatureAbstract
 	 * @var string
 	 */
 	protected $httpMethod;
-	
-	/**
-	 * Required parameters names
-	 * 
-	 * @var array
-	 */
-	protected $requiredParams = array();
 	
 	/**
 	 * Parameter
@@ -74,7 +69,7 @@ abstract class ServiceAbstract extends FeatureAbstract
 	 * @var string
 	 */
 	protected $outputType = self::OUTPUT_TYPE_XML;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -88,6 +83,7 @@ abstract class ServiceAbstract extends FeatureAbstract
 	public function __invoke($args)
 	{
 		//if ( ! $args) return $this;
+		$this->setParameters($args[0]);
 		$request = new ApiRequest();
 		$request->setServer($this->server);
 		$request->setMethod($this->httpMethod);
@@ -98,6 +94,8 @@ abstract class ServiceAbstract extends FeatureAbstract
 		$path = $request->getUri()->getPath();
 		$path .= '/' . trim($this->uriPath,'/');
 		$request->getUri()->setPath($path);
+		$this->setGetParameters($request);
+		$this->setPostParameters($request);
 		if ($this->outputType == self::OUTPUT_TYPE_XML){
 			$response = new ResponseXml();
 		}
@@ -114,6 +112,40 @@ abstract class ServiceAbstract extends FeatureAbstract
 		}
 		return $response;
 	}
+	
+	/**
+	 * Set GET query parameters
+	 * 
+	 * @param ApiRequest
+	 */
+	protected function setGetParameters(ApiRequest $request)
+	{
+		if ( ! $request->isGet() ||count($this->parameters) == 0) return;
+		$query = new Parameters();
+		foreach ($this->parameters as $name => $param){
+			if ($param->isScalar()){
+				$query->set($name, $param->getValue());
+			}
+		}
+		$request->setQuery($query);
+	}
+	
+/**
+	 * Set POST parameter
+	 * 
+	 * @param ApiRequest
+	 */
+	protected function setPostParameters(ApiRequest $request)
+	{
+		if ( ! $request->isPost() ||count($this->parameters) == 0) return;
+		$post = new Parameters();
+		foreach ($this->parameters as $name => $param){
+			if ($param->isScalar()){
+				$post->set($name, $param->getValue());
+			}
+		}
+		$request->setPost($post);
+	} 
 	
 	/**
 	 * Set custom Api Client
@@ -157,12 +189,28 @@ abstract class ServiceAbstract extends FeatureAbstract
 		return $this->apiKeyName;
 	}
 	
-	protected function setParameters($args)
+	/**
+	 * Add parameter
+	 * 
+	 * @param ApiParameter $apiParameter
+	 */
+	public function addParameter(ApiParameter $apiParameter)
 	{
+		$this->parameters[$apiParameter->getName()] = $apiParameter;
 	}
 	
-	protected function setParameter($name, ApiParameter $param)
+	/**
+	 * Set parameters
+	 * 
+	 * @param array $args
+	 */
+	protected function setParameters($args)
 	{
-		$this->parameters[$name] = $param;
+		foreach ($this->parameters as $name => $param)
+		{
+			if ( ! array_key_exists($name,$this->parameters)) throw new Exception($name . ' is not allowed');
+			if ($param->isRequired() &&  ! isset($args[$name])) throw new Exception($name . ' is required');
+			$this->parameters[$name]->setValue($args[$name]);
+		}
 	}
 }

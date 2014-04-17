@@ -2,6 +2,7 @@
 namespace ZendPattern\ZSWebAPI2\Server;
 
 use ZendPattern\ZSWebAPI2\Api\Service\ZendServer\GetSystemInfo;
+use ZendPattern\ZSWebAPI2\Api\Service\ZendServer\GetServerInfo;
 
 class ZendServer6 extends ZendServer
 {
@@ -16,6 +17,7 @@ class ZendServer6 extends ZendServer
 	protected function init()
 	{
 		$this->addFeature(new GetSystemInfo());
+		$this->addFeature(new GetServerInfo());
 	}
 	
 
