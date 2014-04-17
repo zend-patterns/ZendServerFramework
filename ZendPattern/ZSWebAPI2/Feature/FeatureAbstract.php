@@ -41,4 +41,19 @@ abstract class FeatureAbstract implements FeatureInterface
 	{
 		return $this->name;
 	}
+	
+	/**
+	 * @param string $name
+	 */
+	public function setName($name) {
+		$this->name = strtolower($name);
+	}
+	
+	/**
+	 * Magical invoke
+	 * 
+	 * @param array $args
+	 */
+	abstract public function __invoke($args);
+
 }

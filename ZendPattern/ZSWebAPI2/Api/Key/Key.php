@@ -1,7 +1,7 @@
 <?php
-namespace ZendPattern\ZSWebAPI2\ApiKey;
+namespace ZendPattern\ZSWebAPI2\Api\Key;
 
-class ApiKey
+class Key
 {
 	/**
 	 * Key ID

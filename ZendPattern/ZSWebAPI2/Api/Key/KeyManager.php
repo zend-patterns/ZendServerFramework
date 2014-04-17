@@ -1,9 +1,9 @@
 <?php
-namespace ZendPattern\ZSWebAPI2\ApiKey;
+namespace ZendPattern\ZSWebAPI2\Api\Key;
 
 use ZendPattern\ZSWebAPI2\Exception\Exception;
 
-class ApiKeyManager
+class KeyManager
 {
 	/**
 	 * Api keys
@@ -25,7 +25,7 @@ class ApiKeyManager
 	 * @param ApiKey $apikey
 	 * @param boolean $isAdmin
 	 */
-	public function addApiKey(ApiKey $apikey,$isAdmin = false)
+	public function addApiKey(Key $apikey,$isAdmin = false)
 	{
 		$keyName = $apikey->getName();
 		$this->apiKeys[$keyName] = $apikey;
@@ -49,8 +49,9 @@ class ApiKeyManager
 	 * @throws Exception
 	 * @return multitype:
 	 */
-	public function getApiKey($keyName)
+	public function getApiKey($keyName = null)
 	{
+		if ( ! $keyName) return $this->getAdminApiKey();
 		if ( ! isset($this->apiKeys[$keyName])) throw new Exception('Requested api does\'nt exixsts : ' . $keyName);
 		return $this->apiKeys[$keyName];
 	}

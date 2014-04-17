@@ -1,10 +1,10 @@
 <?php
 
-namespace ZendPattern\ZSWebAPI2\ApiService\Basic;
+namespace ZendPattern\ZSWebAPI2\Api\Service\ZendServer;
 
-use ZendPattern\ZSWebAPI2\ApiService\ServiceAbstract;
+use ZendPattern\ZSWebAPI2\Api\Service\ServiceAbstract;
 
-class GetSytemInfo extends ServiceAbstract
+class GetSystemInfo extends ServiceAbstract
 {
 	/**
 	 * Constructor
@@ -15,7 +15,7 @@ class GetSytemInfo extends ServiceAbstract
 		$this->name = 'getSystemInfo';
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
-		$this->uriPath = 'getSytemInfo';
+		$this->uriPath = $this->name;
 		$this->parameters = array();
 	}
 }

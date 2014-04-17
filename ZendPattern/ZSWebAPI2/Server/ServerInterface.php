@@ -1,7 +1,7 @@
 <?php
 namespace ZendPattern\ZSWebAPI2\Server;
 
-use Zend\Uri\Uri;
+use ZendPattern\ZSWebAPI2\Server\WebInterface;
 
 interface ServerInterface
 {
@@ -11,22 +11,6 @@ interface ServerInterface
 	 * @return string
 	 */
 	public function getVersion();
-	
-	/**
-	 * Get Zend Server root URI
-	 * 
-	 * @example : based on http;//localhost:10081
-	 * @return Uri
-	 */
-	public function getRootUri();
-	
-	/**
-	 * Get Zend Server root API path
-	 * 
-	 * @example : /ZendServer/Api
-	 * @return string
-	 */
-	public function getApiUri();
 	
 	/**
 	 * Retunr API Version
@@ -41,4 +25,12 @@ interface ServerInterface
 	 * @return string
 	 */
 	public function getEdition();
+	
+	/**
+	 * Return the web interface
+	 * 
+	 * Web interface are URI informations
+	 * @return WebInterface
+	 */
+	public function getWebInterface();
 }

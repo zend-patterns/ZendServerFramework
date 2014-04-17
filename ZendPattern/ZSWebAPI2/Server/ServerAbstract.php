@@ -1,31 +1,26 @@
 <?php
 namespace ZendPattern\ZSWebAPI2\Server;
 
-use Zend\Uri\Uri;
 use ZendPattern\ZSWebAPI2\Feature\FeatureSet;
 use ZendPattern\ZSWebAPI2\Feature\FeatureInterface;
+use ZendPattern\ZSWebAPI2\Core\Version;
+use ZendPattern\ZSWebAPI2\Api\Key\KeyManager;
+
 abstract class ServerAbstract implements ServerInterface
 {
 	/**
-	 * Zend Server root Uri
+	 * Web interface
 	 * 
-	 * @var Uri
+	 * @var WebInterface
 	 */
-	protected $rootUri;
+	protected $webInterface;
 	
 	/**
 	 * Zend Server version
 	 * 
-	 * @var string
+	 * @var Version
 	 */
 	protected $version;
-	
-	/**
-	 * Web API path
-	 * 
-	 * @var string
-	 */
-	protected $apiPath;
 	
 	/**
 	 * Api version supported by server
@@ -49,24 +44,19 @@ abstract class ServerAbstract implements ServerInterface
 	protected $featureSet;
 	
 	/**
+	 * Api Keys manager
+	 * 
+	 * @var KeyManager
+	 */
+	protected $keyManager;
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see \ZendPattern\ZSWebAPI2\Server\ServerInterface::getVersion()
 	 */
 	public function getVersion()
 	{
 		return $this->version;
-	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see \ZendPattern\ZSWebAPI2\Server\ServerInterface::getApiUri()
-	 */
-	public function getApiUri()
-	{
-		$uri = clone $this->rootUri;
-		$rootPath = rtrim($this->rootUri->getPath(), '/');
-		$uri->setPath($rootPath . '/' . $this->apiPath);
-		return $uri;
 	}
 
 	/**
@@ -77,34 +67,13 @@ abstract class ServerAbstract implements ServerInterface
 	}
 	
 	/**
-	 * @param string $apiPath
-	 */
-	public function setApiPath($apiPath) {
-		$this->apiPath = trim($apiPath,'/');
-	}
-	
-	/**
-	 * @return the $rootUri
-	 */
-	public function getRootUri() {
-		return $this->rootUri;
-	}
-
-	/**
-	 * @param \Zend\Uri\Uri $rootUri
-	 */
-	public function setRootUri($rootUri) {
-		$this->rootUri = $rootUri;
-	}
-	
-	/**
 	 * (non-PHPdoc)
 	 * @see \ZendPattern\ZSWebAPI2\Server\ServerInterface::getApiVersion()
 	 */
 	public function getApiVersion()
 	{
 		if ($this->apiVersion) return $this->apiVersion;
-		$config = include __DIR__ . '/../config/api.version.config.php';
+		$config = include __DIR__ . '/../Config/api.versions.config.php';
 		if ( ! isset($config[$this->version])) throw new Exception('no API define for Zend Server ' . $this->version);
 		$this->apiVersion = $config[$this->version];
 		return $this->apiVersion;
@@ -141,4 +110,61 @@ abstract class ServerAbstract implements ServerInterface
 		$feature->setServer($this);
 		$this->getFeatureSet()->addFeature($feature);
 	}
+	
+	/**
+	 * @return the $webInterface
+	 */
+	public function getWebInterface() {
+		return $this->webInterface;
+	}
+
+	/**
+	 * @param \ZendPattern\ZSWebAPI2\Server\WebInterface $webInterface
+	 */
+	public function setWebInterface($webInterface) {
+		$this->webInterface = $webInterface;
+	}
+	
+	/**
+	 * @param string $edition
+	 */
+	public function setEdition($edition) {
+		$this->edition = $edition;
+	}
+	
+	/**
+	 * Calling features
+	 * 
+	 * @param string $method
+	 * @param unknown $args
+	 */
+	public function __call($method,$args)
+	{
+		if ($this->featureSet->hasFeature($method)) {
+			$feature = $this->featureSet->get($method);
+			return $feature($args);
+		}
+	}
+	
+	/**
+	 * Check if edition is compatible with version
+	 */
+	abstract protected function checkEditionValidity();
+	
+	/**
+	 * Get Key manager
+	 * 
+	 * @return KeyManager
+	 */
+	public function getKeyManager() {
+		return $this->keyManager;
+	}
+
+	/**
+	 * @param \ZendPattern\ZSWebAPI2\Api\Key\KeyManager $keyManager
+	 */
+	public function setKeyManager($keyManager) {
+		$this->keyManager = $keyManager;
+	}
+
 }
