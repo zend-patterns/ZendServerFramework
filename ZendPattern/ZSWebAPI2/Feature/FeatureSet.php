@@ -17,7 +17,6 @@ class FeatureSet
 	 */
 	public function addFeature(FeatureInterface $feature)
 	{
-		
 		$this->features[$feature->getName()] = $feature;
 	}
 	
@@ -28,6 +27,7 @@ class FeatureSet
 	 */
 	public function removeFeature($name)
 	{
+		$name = strtolower($name);
 		unset($this->features[$name]);
 	}
 	
@@ -38,6 +38,7 @@ class FeatureSet
 	 */
 	public function hasFeature($name)
 	{
+		$name = strtolower($name);
 		return array_key_exists($name, $this->features);
 	}
 	
@@ -48,6 +49,7 @@ class FeatureSet
 	 */
 	public function get($name)
 	{
+		$name = strtolower($name);
 		if ( ! $this->hasFeature($name)) return;
 		return $this->features[$name];
 	}

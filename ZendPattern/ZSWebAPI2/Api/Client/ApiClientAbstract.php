@@ -48,11 +48,9 @@ abstract class ApiClientAbstract extends Client
 			} else {
 				$headers->addHeaderLine('Content-Type', 'application/x-www-form-urlencoded');
 			}
-			$this->request->setPostParameter();
 			$contentLength += strlen($this->getContent());
 			$headers->addHeaderLine('Content-Length',$contentLength);
-		} /*else
-			//$this->request->setGetParameter();*/
+		}
 		$this->request->setHeaders($headers);
 	}
 

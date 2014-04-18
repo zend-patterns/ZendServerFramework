@@ -5,6 +5,8 @@ use Zend\Uri\Http;
 
 class WebInterface
 {
+	const DEFAULT_HOST = 'http://localhost:10081';
+	const DEFAULT_API_PATH = 'ZendServer/Api';
 	/**
 	 * Zend Server root Uri
 	 * 
@@ -25,7 +27,7 @@ class WebInterface
 	 * @param string $rootUri :
 	 * @param unknown $apiPath
 	 */
-	public function __construct($rootUri = 'http://localhost:10081', $apiPath = 'ZendServer/Api')
+	public function __construct($rootUri = self::DEFAULT_HOST,$apiPath = self::DEFAULT_API_PATH)
 	{
 		$rootUri = new Http($rootUri);
 		$this->setRootUri($rootUri);

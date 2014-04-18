@@ -2,8 +2,9 @@
 namespace ZendPattern\ZSWebAPI2\Feature;
 
 use ZendPattern\ZSWebAPI2\Server\ServerInterface;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 
-abstract class FeatureAbstract implements FeatureInterface
+abstract class FeatureAbstract implements FeatureInterface, ResourceInterface
 {
 	/**
 	 * Zend Server
@@ -39,7 +40,7 @@ abstract class FeatureAbstract implements FeatureInterface
 	 */
 	public function getName()
 	{
-		return $this->name;
+		return strtolower($this->name);
 	}
 	
 	/**
@@ -55,5 +56,11 @@ abstract class FeatureAbstract implements FeatureInterface
 	 * @param array $args
 	 */
 	abstract public function __invoke($args);
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\Permissions\Acl\Resource\ResourceInterface::getResourceId()
+	 */
+	abstract public function getResourceId();
 
 }

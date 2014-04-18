@@ -28,8 +28,7 @@ class ResponseXml extends ResponseAbstract
 	 */
 	public function getErrorCode()
 	{
-		if ($this->statusCode < 400) return null;
-		$errorCode = (string) $this->xml->errorData->errorCode;
+		$errorCode = (string) $this->getXmlContent()->errorData->errorCode;
 		return $errorCode;
 	}
 	
@@ -39,8 +38,7 @@ class ResponseXml extends ResponseAbstract
 	 */
 	public function getErrorMessage()
 	{
-		if ($this->statusCode < 400) return null;
-		$errorMessage = (string) $this->xml->errorData->errorMessage;
+		$errorMessage = (string) $this->getXmlContent()->errorData->errorMessage;
 		return $errorMessage;
 	}
 }

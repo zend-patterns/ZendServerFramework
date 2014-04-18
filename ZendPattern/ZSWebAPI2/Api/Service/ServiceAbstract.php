@@ -77,13 +77,28 @@ abstract class ServiceAbstract extends FeatureAbstract
 	
 	/**
 	 * (non-PHPdoc)
+	 * @see \ZendPattern\ZSWebAPI2\Feature\FeatureAbstract::getResourceId()
+	 */
+	public function getResourceId()
+	{
+		$resourceId = $this->getName() . '-' . $this->server->getApiVersion();
+		return $resourceId;
+	}
+	
+	/**
+	 * (non-PHPdoc)
 	 * @see \ZendPattern\ZSWebAPI2\Feature\FeatureAbstract::__invoke()
+	 * 
+	 * @param array   0	: service parameters
+	 * @param string  1	: api key name
+	 * @param Client  2	: Api client to use
 	 * @return Response;
 	 */
 	public function __invoke($args)
 	{
-		//if ( ! $args) return $this;
-		$this->setParameters($args[0]);
+		if (isset($args[1])) $this->setApiKeyName($args[1]);
+		if (isset($args[2])) $this->setHttpClient($args[2]);
+		if (isset($args[0])) $this->setParameters($args[0]);
 		$request = new ApiRequest();
 		$request->setServer($this->server);
 		$request->setMethod($this->httpMethod);
@@ -107,7 +122,7 @@ abstract class ServiceAbstract extends FeatureAbstract
 			$message  = 'URI: ' . $request->getUri()->toString();
 			$message .= ' - Error: ' . $response->getErrorCode();
 			$message .= ' - Reason: ' . $response->getErrorMessage();
-			//$message .= ' - ' . $response->getBody();
+			$message .= ' - ' . $response->getBody();
 			throw new Exception($message);
 		}
 		return $response;

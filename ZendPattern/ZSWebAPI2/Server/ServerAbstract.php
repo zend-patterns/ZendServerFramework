@@ -5,8 +5,10 @@ use ZendPattern\ZSWebAPI2\Feature\FeatureSet;
 use ZendPattern\ZSWebAPI2\Feature\FeatureInterface;
 use ZendPattern\ZSWebAPI2\Core\Version;
 use ZendPattern\ZSWebAPI2\Api\Key\KeyManager;
+use Zend\Permissions\Acl\Role\RoleInterface;
+use ZendPattern\ZSWebAPI2\Exception\Exception;
 
-abstract class ServerAbstract implements ServerInterface
+abstract class ServerAbstract implements ServerInterface, RoleInterface
 {
 	/**
 	 * Web interface
@@ -144,6 +146,7 @@ abstract class ServerAbstract implements ServerInterface
 			$feature = $this->featureSet->get($method);
 			return $feature($args);
 		}
+		else throw new Exception('Feature or method : ' .$method . ' is not defined');
 	}
 	
 	/**
@@ -165,6 +168,16 @@ abstract class ServerAbstract implements ServerInterface
 	 */
 	public function setKeyManager($keyManager) {
 		$this->keyManager = $keyManager;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see \Zend\Permissions\Acl\Role\RoleInterface::getRoleId()
+	 */
+	public function getRoleId()
+	{
+		$roleId = 'ZendServer-' . $this->getVersion() . '-' .$this->getEdition();
+		return $roleId;
 	}
 
 }
