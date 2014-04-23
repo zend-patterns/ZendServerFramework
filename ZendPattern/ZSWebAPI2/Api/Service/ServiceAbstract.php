@@ -71,11 +71,6 @@ abstract class ServiceAbstract extends FeatureAbstract
 	protected $outputType = self::OUTPUT_TYPE_XML;
 
 	/**
-	 * Constructor
-	 */
-	abstract public function __construct();
-	
-	/**
 	 * (non-PHPdoc)
 	 * @see \ZendPattern\ZSWebAPI2\Feature\FeatureAbstract::getResourceId()
 	 */

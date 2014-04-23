@@ -65,7 +65,8 @@ abstract class ServerAbstract implements ServerInterface, RoleInterface
 	 * @param string $version
 	 */
 	public function setVersion($version) {
-		$this->version = $version;
+		$this->version = new Version($version);
+		$this->apiVersion = null;
 	}
 	
 	/**
@@ -76,8 +77,9 @@ abstract class ServerAbstract implements ServerInterface, RoleInterface
 	{
 		if ($this->apiVersion) return $this->apiVersion;
 		$config = include __DIR__ . '/../Config/api.versions.config.php';
-		if ( ! isset($config[$this->version])) throw new Exception('no API define for Zend Server ' . $this->version);
-		$this->apiVersion = $config[$this->version];
+		$version = $this->version->getFullVersion();
+		if ( ! isset($config[$version])) throw new Exception('no API define for Zend Server ' .$version);
+		$this->apiVersion = $config[$version];
 		return $this->apiVersion;
 	}
 	
@@ -138,12 +140,30 @@ abstract class ServerAbstract implements ServerInterface, RoleInterface
 	 * Calling features
 	 * 
 	 * @param string $method
-	 * @param unknown $args
+	 * @param array $args
 	 */
 	public function __call($method,$args)
 	{
 		if ($this->featureSet->hasFeature($method)) {
 			$feature = $this->featureSet->get($method);
+			$feature->setServer($this);
+			return $feature($args);
+		}
+		else throw new Exception('Feature or method : ' .$method . ' is not defined');
+	}
+	
+	/**
+	 * Calling features statically
+	 * 
+	 * @param string $method
+	 * @param array $args
+	 * @throws Exception
+	 */
+	static public function __callstatic($method,$args)
+	{
+		if ($this->featureSet->hasFeature($method)) {
+			$feature = $this->featureSet->get($method);
+			$feature->setServer($this);
 			return $feature($args);
 		}
 		else throw new Exception('Feature or method : ' .$method . ' is not defined');

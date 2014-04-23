@@ -14,6 +14,13 @@ abstract class FeatureAbstract implements FeatureInterface, ResourceInterface
 	protected $server;
 	
 	/**
+	 * List of dependent feature
+	 * 
+	 * @var array
+	 */
+	protected $dependencies = array();
+	
+	/**
 	 * Feature name
 	 * 
 	 * @var string
@@ -40,14 +47,28 @@ abstract class FeatureAbstract implements FeatureInterface, ResourceInterface
 	 */
 	public function getName()
 	{
-		return strtolower($this->name);
+		if ($this->name) return $this->name;
+		if ( ! preg_match('@\\\\@',get_class($this))) {
+			$this->name = strtolower(get_class($this));
+			return $this->name;
+		}
+		$tmp = array_reverse(preg_split('@\\\\@', get_class($this)));
+		$this->name = strtolower($tmp[0]);
+		return $this->name;
+	}
+
+	/**
+	 * @return the $dependecies
+	 */
+	public function getDependencies() {
+		return $this->dependencies;
 	}
 	
 	/**
-	 * @param string $name
+	 * @param multitype: $dependecies
 	 */
-	public function setName($name) {
-		$this->name = strtolower($name);
+	public function setDependencies($dependencies) {
+		$this->dependencies = $dependencies;
 	}
 	
 	/**
@@ -61,6 +82,9 @@ abstract class FeatureAbstract implements FeatureInterface, ResourceInterface
 	 * (non-PHPdoc)
 	 * @see \Zend\Permissions\Acl\Resource\ResourceInterface::getResourceId()
 	 */
-	abstract public function getResourceId();
+	public function getResourceId()
+	{
+		return $this->getName();
+	}
 
 }

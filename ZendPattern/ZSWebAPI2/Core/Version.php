@@ -17,7 +17,7 @@ class Version
 	 */
 	public function __construct($fullVersion)
 	{
-		$this->fullVersion;
+		$this->fullVersion = $fullVersion;
 	}
 	
 	/**

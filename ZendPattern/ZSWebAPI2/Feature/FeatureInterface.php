@@ -6,6 +6,11 @@ use ZendPattern\ZSWebAPI2\Server\ServerInterface;
 interface FeatureInterface
 {
 	/**
+	 * No parameter constructor
+	 */
+	public function __construct();
+	
+	/**
 	 * Retunr Zend Server
 	 * 
 	 * @return ServerInterface
@@ -25,4 +30,12 @@ interface FeatureInterface
 	 * @return string
 	 */
 	public function getName();
+	
+	/**
+	 * Return list of dependent features
+	 * 
+	 * @return array
+	 */
+	public function getDependencies();
+	
 }

@@ -17,6 +17,11 @@ class FeatureSet
 	 */
 	public function addFeature(FeatureInterface $feature)
 	{
+		if ($this->hasFeature($feature->getName())) return;
+		foreach ($feature->getDependencies() as $depName){
+			$dependency = new $depName();
+			$this->addFeature($dependency);
+		}
 		$this->features[$feature->getName()] = $feature;
 	}
 	
@@ -39,7 +44,7 @@ class FeatureSet
 	public function hasFeature($name)
 	{
 		$name = strtolower($name);
-		return array_key_exists($name, $this->features);
+		if (array_key_exists($name, $this->features)) return  true;
 	}
 	
 	/**

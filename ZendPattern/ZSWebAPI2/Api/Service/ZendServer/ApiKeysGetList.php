@@ -12,7 +12,6 @@ class ApiKeysGetList extends ServiceAbstract
 	public function __construct()
 	{
 		$this->httpMethod = self::HTTP_METHOD_GET;
-		$this->name = 'apiKeysGetList';
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
 		$this->uriPath = 'apiKeysGetList';
