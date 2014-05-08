@@ -8,7 +8,7 @@ use ZendPattern\Zsf\Api\Client\ApiClient;
 use ZendPattern\Zsf\Api\Key\Key;
 use Zend\Http\Response;
 use ZendPattern\Zsf\Exception\Exception;
-use ZendPattern\Zsf\Api\Response\ResponseXml;
+use ZendPattern\Zsf\Api\Response\ResponseApi;
 use ZendPattern\Zsf\Api\ApiParameter;
 use Zend\Stdlib\Parameters;
 
@@ -107,7 +107,7 @@ abstract class ServiceAbstract extends FeatureAbstract
 		$this->setGetParameters($request);
 		$this->setPostParameters($request);
 		if ($this->outputType == self::OUTPUT_TYPE_XML){
-			$response = new ResponseXml();
+			$response = new ResponseApi();
 		}
 		$client = $this->getHttpClient();
 		$client->setResponse($response);

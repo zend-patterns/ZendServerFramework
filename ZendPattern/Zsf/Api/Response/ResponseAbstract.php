@@ -2,20 +2,8 @@
 namespace ZendPattern\Zsf\Api\Response;
 
 use Zend\Http\Response;
+use ZendPattern\Zsf\Api\Response\Element\RequestData;
 
 abstract class ResponseAbstract extends Response
 {
-	/**
-	 * Get Api error code
-	 *
-	 * @return NULL|string
-	 */
-	abstract public function getErrorCode();
-	
-	/**
-	 * Get Api error message
-	 *
-	 * @return NULL|string
-	 */
-	abstract public function getErrorMessage();
 }

@@ -44,7 +44,7 @@ class ZendServer6 extends ServerAbstract
 	}
 	
 	/**
-	 * Initiate Zedn Server minimal features
+	 * Initiate Zend Server 6 minimal features
 	 */
 	protected function init()
 	{
