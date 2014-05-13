@@ -20,14 +20,6 @@ class ApiRequest extends Request
 	 */
 	protected $apiKeyName;
 	
-	
-	/**
-	 * Output type
-	 * 
-	 * @var string
-	 */
-	protected $outputType;
-	
 	/**
 	 * Retunr api key
 	 * 
@@ -65,19 +57,4 @@ class ApiRequest extends Request
 	public function setApiKeyName($apiKeyName) {
 		$this->apiKeyName = $apiKeyName;
 	}
-	
-	/**
-	 * @return the $outputType
-	 */
-	public function getOutputType() {
-		return $this->outputType;
-	}
-
-	/**
-	 * @param string $outputType
-	 */
-	public function setOutputType($outputType) {
-		$this->outputType = $outputType;
-	}
-
 }

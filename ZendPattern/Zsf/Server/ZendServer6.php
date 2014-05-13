@@ -6,6 +6,11 @@ use ZendPattern\Zsf\Exception\Exception;
 use ZendPattern\Zsf\Api\Key\KeyManager;
 use ZendPattern\Zsf\Api\Service\ZendServer\GetSystemInfo;
 use ZendPattern\Zsf\Feature\ZendServer6\AutoDiscover;
+use ZendPattern\Zsf\Api\Service\ZendServer\AuditGetList;
+use ZendPattern\Zsf\Api\Service\ZendServer\AuditGetDetails;
+use ZendPattern\Zsf\Api\Service\ZendServer\AuditExport;
+use ZendPattern\Zsf\Api\Service\ZendServer\CodetracingIsEnabled;
+use ZendPattern\Zsf\Api\Service\ZendServer\CodetracingGetInfo;
 
 class ZendServer6 extends ServerAbstract
 {
@@ -50,5 +55,10 @@ class ZendServer6 extends ServerAbstract
 	{
 		$this->addFeature(new AutoDiscover());
 		$this->addFeature(new GetSystemInfo());
+		$this->addFeature(new AuditGetList());
+		$this->addFeature(new AuditGetDetails());
+		$this->addFeature(new AuditExport());
+		$this->addFeature(new CodetracingIsEnabled());
+		$this->addFeature(new CodetracingGetInfo());
 	}
 }

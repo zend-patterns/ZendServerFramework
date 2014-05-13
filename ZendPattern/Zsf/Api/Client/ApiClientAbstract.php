@@ -27,20 +27,13 @@ abstract class ApiClientAbstract extends Client
 	 */
 	public function prepareRequest()
 	{
+		$signature = self::computeSignature($this->request);
 		$date = gmdate('D, d M Y H:i:s ') . 'GMT';
-		$webApiUri = $this->request->getUri()->getPath();
-		$signatureData  = $this->request->getUri()->getHost() . ':';
-		$signatureData .= $this->request->getUri()->getPort() . ':';
-		$signatureData .= $webApiUri . ':';
-		$signatureData .= self::USER_AGENT . ':';
-		$signatureData .= $date;
-		$apiKey = $this->request->getApiKey();
-		$signature = hash_hmac('sha256', $signatureData, $apiKey->getHash());
 		$headers = new Headers();
 		$headers->addHeaderLine('Host', $this->request->getUri()->getHost() . ':' . $this->request->getUri()->getPort());
 		$headers->addHeaderLine('Date', $date);
-		$headers->addHeaderLine('Accept', 'application/vnd.zend.serverapi+'.$this->request->getOutputType().';version=' . $this->request->getServer()->getApiVersion());
-		$headers->addHeaderLine('X-Zend-Signature', $apiKey->getName() . '; ' . $signature);
+		$headers->addHeaderLine('Accept', 'application/vnd.zend.serverapi+xml;version=' . $this->request->getServer()->getApiVersion());
+		$headers->addHeaderLine('X-Zend-Signature', $this->request->getApiKey()->getName() . '; ' . $signature);
 		if ($this->request->isPost()) {
 			$contentLength = 0;
 			if(count($this->request->getFiles())) {
@@ -52,6 +45,24 @@ abstract class ApiClientAbstract extends Client
 			$headers->addHeaderLine('Content-Length',$contentLength);
 		}
 		$this->request->setHeaders($headers);
+	}
+	
+	/**
+	 * 
+	 * @param unknown ApiRequest $requestUri
+	 */
+	public static function computeSignature($requestUri)
+	{
+		$date = gmdate('D, d M Y H:i:s ') . 'GMT';
+		$webApiUri = $requestUri->getUri()->getPath();
+		$signatureData  = $requestUri->getUri()->getHost() . ':';
+		$signatureData .= $requestUri->getUri()->getPort() . ':';
+		$signatureData .= $webApiUri . ':';
+		$signatureData .= self::USER_AGENT . ':';
+		$signatureData .= $date;
+		$apiKey = $requestUri->getApiKey();
+		$signature = hash_hmac('sha256', $signatureData, $apiKey->getHash());
+		return $signature;
 	}
 
 }

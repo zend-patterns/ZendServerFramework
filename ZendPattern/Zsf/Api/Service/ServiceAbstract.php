@@ -6,18 +6,17 @@ use ZendPattern\Zsf\Api\ApiRequest;
 use ZendPattern\Zsf\Api\Client\ApiClientInterface;
 use ZendPattern\Zsf\Api\Client\ApiClient;
 use ZendPattern\Zsf\Api\Key\Key;
-use Zend\Http\Response;
 use ZendPattern\Zsf\Exception\Exception;
 use ZendPattern\Zsf\Api\Response\ResponseApi;
 use ZendPattern\Zsf\Api\ApiParameter;
 use Zend\Stdlib\Parameters;
+use ZendPattern\Zsf\Api\Response\ResponseAbstract;
+use ZendPattern\Zsf\Api\Response\ResponseXml;
 
 abstract class ServiceAbstract extends FeatureAbstract
 {
 	const HTTP_METHOD_GET = 'GET';
 	const HTTP_METHOD_POST = 'POST';
-	
-	const OUTPUT_TYPE_XML = 'xml';
 	
 	const PERMISSION_READ = 'read';
 	
@@ -64,11 +63,11 @@ abstract class ServiceAbstract extends FeatureAbstract
 	protected $apiKeyName = 'admin';
 	
 	/**
-	 * Output type
+	 * Response prototype
 	 * 
-	 * @var string
+	 * @var ResponseAbstract
 	 */
-	protected $outputType = self::OUTPUT_TYPE_XML;
+	protected $responsePrototype;
 
 	/**
 	 * (non-PHPdoc)
@@ -98,7 +97,6 @@ abstract class ServiceAbstract extends FeatureAbstract
 		$request->setServer($this->server);
 		$request->setMethod($this->httpMethod);
 		$request->setApiKeyName($this->apiKeyName);
-		$request->setOutputType($this->outputType);
 		$apiUri = $this->server->getWebInterface()->getApiUri();
 		$request->setUri($apiUri);
 		$path = $request->getUri()->getPath();
@@ -106,21 +104,50 @@ abstract class ServiceAbstract extends FeatureAbstract
 		$request->getUri()->setPath($path);
 		$this->setGetParameters($request);
 		$this->setPostParameters($request);
-		if ($this->outputType == self::OUTPUT_TYPE_XML){
-			$response = new ResponseApi();
-		}
+		$response = $this->getResponsePrototype();
 		$client = $this->getHttpClient();
 		$client->setResponse($response);
 		$client->setRequest($request);
 		$response = $client->send();
+		$responseStrategies = array('xml','file');
+		foreach ($responseStrategies as $prefix){
+			$strategie = $prefix . 'ResponseStrategy';
+			$result = $this->$strategie($response);
+			if ($result) return $result;
+		}
+		throw new Exception('Cannot manage API response');
+	}
+	
+	/**
+	 * Manage Xml api response
+	 * 
+	 * @param ResponseApi $response
+	 * @throws Exception
+	 * @return void|unknown
+	 */
+	protected function xmlResponseStrategy($response)
+	{
+		$contentType = $response->getHeaders()->get('Content-Type')->getFieldValue();
+		if (preg_match('@^application/vnd\.zend\.serverapi\+xml@', $contentType) != 1) return;
 		if ( ! $response->isSuccess()){
-			$message  = 'URI: ' . $request->getUri()->toString();
-			$message .= ' - Error: ' . $response->getErrorCode();
-			$message .= ' - Reason: ' . $response->getErrorMessage();
+			$message  = ' - Error: ' . $response->getApiErrorCode();
+			$message .= ' - Reason: ' . $response->getApiErrorMessage();
 			$message .= ' - ' . $response->getBody();
 			throw new Exception($message);
 		}
 		return $response;
+	}
+	
+	/**
+	 * Manage file api response
+	 * 
+	 * @param reposneApi $response
+	 */
+	protected function fileResponseStrategy($response)
+	{
+		$contentType = $response->getHeaders()->get('Content-Type')->getFieldValue();
+		if ($contentType == 'application/zip') return $response;
+		if ($contentType == 'application/x-amf') return $response;
 	}
 	
 	/**
@@ -130,17 +157,18 @@ abstract class ServiceAbstract extends FeatureAbstract
 	 */
 	protected function setGetParameters(ApiRequest $request)
 	{
-		if ( ! $request->isGet() ||count($this->parameters) == 0) return;
+		if ( ! $request->isGet() || count($this->parameters) == 0) return;
 		$query = new Parameters();
 		foreach ($this->parameters as $name => $param){
 			if ($param->isScalar()){
+				if ($param->getValue() === null) continue;
 				$query->set($name, $param->getValue());
 			}
 		}
 		$request->setQuery($query);
 	}
 	
-/**
+	/**
 	 * Set POST parameter
 	 * 
 	 * @param ApiRequest
@@ -216,11 +244,30 @@ abstract class ServiceAbstract extends FeatureAbstract
 	 */
 	protected function setParameters($args)
 	{
+		foreach ($args as $name => $value){
+			if ( ! array_key_exists($name,$this->parameters)) throw new Exception($name . ' is not allowed');
+		}
 		foreach ($this->parameters as $name => $param)
 		{
-			if ( ! array_key_exists($name,$this->parameters)) throw new Exception($name . ' is not allowed');
 			if ($param->isRequired() &&  ! isset($args[$name])) throw new Exception($name . ' is required');
-			$this->parameters[$name]->setValue($args[$name]);
+			if (isset($args[$name])) $this->parameters[$name]->setValue($args[$name]);
 		}
 	}
+	
+	/**
+	 * @return the $responsePrototype
+	 */
+	public function getResponsePrototype() {
+		if ($this->responsePrototype) return $this->responsePrototype;
+		$this->responsePrototype = new ResponseXml();
+		return $this->responsePrototype;
+	}
+
+	/**
+	 * @param \ZendPattern\Zsf\Api\Response\ResponseAbstract $responsePrototype
+	 */
+	public function setResponsePrototype($responsePrototype) {
+		$this->responsePrototype = $responsePrototype;
+	}
+
 }

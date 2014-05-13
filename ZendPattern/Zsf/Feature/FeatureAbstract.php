@@ -28,6 +28,14 @@ abstract class FeatureAbstract implements FeatureInterface, ResourceInterface
 	protected $name;
 	
 	/**
+	 * Empty constrcutor by default
+	 */
+	public function __construct()
+	{
+		
+	}
+	
+	/**
 	 * @return the $server
 	 */
 	public function getServer() {

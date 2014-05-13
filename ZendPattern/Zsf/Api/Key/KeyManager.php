@@ -83,4 +83,16 @@ class KeyManager
 			$this->addApiKey($apikey);
 		}
 	}
+	
+	/**
+	 * Check key validity
+	 * 
+	 * @param string $keyName
+	 * @param string $keyHash
+	 */
+	public function validateKey($keyName,$keyHash)
+	{
+		$key = $this->getApiKey($keyName);
+		return ($keyHask == $key->getHash());
+	}
 }
