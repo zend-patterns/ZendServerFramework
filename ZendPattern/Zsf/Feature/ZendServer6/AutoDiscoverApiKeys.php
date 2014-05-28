@@ -13,7 +13,7 @@ class AutoDiscoverApiKeys extends FeatureAbstract
 	public function __construct()
 	{
 		$this->setDependencies(array(
-			'ZendPattern\Zsf\Api\Service\ZendServer\ApiKeysGetList'
+			'ZendPattern\Zsf\Api\Service\ZendServer\Administration\ApiKeysGetList'
 		));
 	}
 	

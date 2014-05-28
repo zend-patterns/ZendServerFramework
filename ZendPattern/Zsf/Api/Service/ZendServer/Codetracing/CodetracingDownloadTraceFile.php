@@ -1,6 +1,6 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Codetracing;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
 use ZendPattern\Zsf\Api\ApiParameter;

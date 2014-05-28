@@ -1,6 +1,6 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Audit;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
 use ZendPattern\Zsf\Api\ApiParameter;

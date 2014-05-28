@@ -1,11 +1,11 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Audit;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
 use ZendPattern\Zsf\Api\ApiParameter;
 
-class GetServerInfo extends ServiceAbstract
+class AuditGetDetails extends ServiceAbstract
 {
 	/**
 	 * Constructor
@@ -15,7 +15,7 @@ class GetServerInfo extends ServiceAbstract
 		$this->httpMethod = self::HTTP_METHOD_GET;
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
-		$this->uriPath = 'getServerInfo';
-		$this->addParameter(new ApiParameter('serverId', ApiParameter::TYPE_INTEGER));
+		$this->uriPath = 'auditGetDetails';
+		$this->addParameter(new ApiParameter('auditId', ApiParameter::TYPE_INTEGER,true));
 	}
 }

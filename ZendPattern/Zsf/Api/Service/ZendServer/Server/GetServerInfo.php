@@ -1,10 +1,11 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Server;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
+use ZendPattern\Zsf\Api\ApiParameter;
 
-class ApiKeysGetList extends ServiceAbstract
+class GetServerInfo extends ServiceAbstract
 {
 	/**
 	 * Constructor
@@ -14,7 +15,7 @@ class ApiKeysGetList extends ServiceAbstract
 		$this->httpMethod = self::HTTP_METHOD_GET;
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
-		$this->uriPath = 'apiKeysGetList';
-		$this->parameters = array();
+		$this->uriPath = 'getServerInfo';
+		$this->addParameter(new ApiParameter('serverId', ApiParameter::TYPE_INTEGER));
 	}
 }

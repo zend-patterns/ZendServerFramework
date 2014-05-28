@@ -1,10 +1,10 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Codetracing;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
 
-class GetSystemInfo extends ServiceAbstract
+class CodetracingIsEnabled extends ServiceAbstract
 {
 	/**
 	 * Constructor
@@ -14,7 +14,6 @@ class GetSystemInfo extends ServiceAbstract
 		$this->httpMethod = self::HTTP_METHOD_GET;
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
-		$this->uriPath = 'getSystemInfo';
-		$this->parameters = array();
+		$this->uriPath = 'codetracingIsEnabled';
 	}
 }

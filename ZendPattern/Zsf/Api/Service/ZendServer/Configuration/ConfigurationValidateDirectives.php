@@ -1,11 +1,11 @@
 <?php
 
-namespace ZendPattern\Zsf\Api\Service\ZendServer;
+namespace ZendPattern\Zsf\Api\Service\ZendServer\Configuration;
 
 use ZendPattern\Zsf\Api\Service\ServiceAbstract;
 use ZendPattern\Zsf\Api\ApiParameter;
 
-class CodetracingGetInfo extends ServiceAbstract
+class ConfigurationValidateDirectives extends ServiceAbstract
 {
 	/**
 	 * Constructor
@@ -15,7 +15,7 @@ class CodetracingGetInfo extends ServiceAbstract
 		$this->httpMethod = self::HTTP_METHOD_GET;
 		$this->requiredParams = array();
 		$this->requiredPermission = self::PERMISSION_READ;
-		$this->uriPath = 'codetracingGetInfo';
-		$this->addParameter(new ApiParameter('id', ApiParameter::TYPE_STRING,true));
+		$this->uriPath = 'configurationValidateDirectives';
+		$this->addParameter(new ApiParameter('directive', ApiParameter::TYPE_ARRAY,true));
 	}
 }

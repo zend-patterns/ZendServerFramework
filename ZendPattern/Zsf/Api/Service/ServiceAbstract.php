@@ -148,6 +148,7 @@ abstract class ServiceAbstract extends FeatureAbstract
 		$contentType = $response->getHeaders()->get('Content-Type')->getFieldValue();
 		if ($contentType == 'application/zip') return $response;
 		if ($contentType == 'application/x-amf') return $response;
+		if ($contentType == 'application/vnd.zend.serverconfig') return $response;
 	}
 	
 	/**
